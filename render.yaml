@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: francheese
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: JWT_SECRET
+        value: francheese-super-secret-key-2024
+      - key: SENDGRID_API_KEY
+        generateValue: true
