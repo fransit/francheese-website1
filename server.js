@@ -3,6 +3,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
+const path = require('path');
 // const sgMail = require('@sendgrid/mail'); // Commented out - not installed
 // const nodemailer = require('nodemailer'); // Commented out - not installed
 require('dotenv').config();
@@ -10,6 +11,9 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Serve static files from src directory
+app.use(express.static(path.join(__dirname, 'src')));
 
 // Simple rate limiting (in production, use a proper rate limiter)
 const requestCounts = new Map();
@@ -40,7 +44,6 @@ function rateLimit(req, res, next) {
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('src')); // Serve static files from src directory
 app.use(rateLimit); // Apply rate limiting to all routes
 
 // In-memory data storage (for development/testing)
@@ -73,6 +76,11 @@ const initializeData = () => {
 initializeData();
 
 // Removed MongoDB schemas - using in-memory data structures instead
+
+// Serve the main HTML file for root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'francheese.html'));
+});
 
 // Middleware to verify JWT token
 const authenticateToken = (req, res, next) => {
